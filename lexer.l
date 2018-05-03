@@ -1,5 +1,5 @@
 %{
-	#include "parser.tab.h"
+	#include "run.h"
 %}
 
 %option noyywrap
@@ -25,22 +25,22 @@ id    		[a-zA-Z][a-zA-Z_0-9]*
 
 
 {int}       			{ 
-							yylval->C_INTEGER = atol(yytext); 
+							yylval.num = atol(yytext); 
 							return C_INTEGER;
 						}
 \"(\\.|[^"^\n\\])*\" 	{ 	
-							char* str = strdup(yytext);
-							yylval->C_STRING = str; 
+							char* sr = strdup(yytext);
+							yylval.str = sr; 
 							return C_STRING;
 						}
 
 integer 				{ 
-							yylval.s = "T_INTEGER"; 
+							yylval.str = "T_INTEGER"; 
 							return T_INTEGER; 
 						}
 						
 string	 				{ 
-							yylval.s = "T"; 
+							yylval.str = "T_STRING"; 
 							return T_STRING; 
 						}
 						
@@ -83,8 +83,8 @@ closure 	{ return CLOSURE; 		}
 "<" 		{ return LESS_THAN; 	}
 "=" 		{ return EQUAL_TO; 		}
 ":=" 		{ return ASSIGN; 		}
-int2real	{ return INT2REAL; 		}
-real2int	{ return REAL2INT; 		}
+I2R			{ return I2R; 			}
+R2I			{ return R2I; 			}
 is_null 	{ return IS_NULL; 		}
 "!" 		{ return NOT; 			}
 "&" 		{ return AND; 			}
@@ -94,8 +94,8 @@ is_null 	{ return IS_NULL; 		}
 
 {id}		{ 
 				char* str = strdup(yytext); 
-				yylval->ID = str; 
-				return ID;
+				yylval.str = str; 
+				return IDENTIFIER;
 			}
 
 
